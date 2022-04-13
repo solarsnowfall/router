@@ -1,0 +1,26 @@
+{
+    "name": "solarsnowfall/router",
+    "description": "Simple routing.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Travis Miller",
+            "email": "travis@twooutrally.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.4",
+        "ext-json": "*",
+        "solarsnowfall/string-convention": "*"
+    },
+    "require-dev": {
+        "solarsnofwall/curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Solar\\": "src"
+        }
+    }
+}
