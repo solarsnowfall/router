@@ -16,7 +16,7 @@
         "solarsnowfall/string-convention": "*"
     },
     "require-dev": {
-        "solarsnofwall/curl": "*"
+        "solarsnowfall/curl": "dev-master"
     },
     "autoload": {
         "psr-4": {

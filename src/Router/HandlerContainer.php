@@ -46,9 +46,4 @@ class HandlerContainer
 
         throw new \Exception('Invalid handler provided');
     }
-
-    public function getWildcardMethod(Request $request)
-    {
-
-    }
 }

@@ -2,12 +2,14 @@
 
 namespace Solar\Router;
 
+use Solar\Auth\AuthInterface;
+
 class Dispatcher
 {
     /**
-     * @var callable|null
+     * @var AuthInterface|null
      */
-    protected $authCallback = null;
+    protected ?AuthInterface $auth = null;
 
     /**
      * @var array
@@ -26,10 +28,24 @@ class Dispatcher
 
     /**
      * @param Router $router
+     * @param AuthInterface|null $auth
      */
-    public function __construct(Router $router)
+    public function __construct(Router $router, AuthInterface $auth = null)
     {
         $this->router = $router;
+
+        $this->auth = $auth;
+    }
+
+    /**
+     * @param $authCallback
+     * @return $this
+     */
+    public function setAuthCallback($authCallback): self
+    {
+        $this->authCallback = $authCallback;
+
+        return $this;
     }
 
     /**
@@ -40,14 +56,6 @@ class Dispatcher
         return $this->headers['Content-Type'] ?? null;
     }
 
-    public function authenticate()
-    {
-        if ($this->authCallback === null)
-            return true;
-
-        return call_user_func($this->authCallback, $this);
-    }
-
     /**
      * @param Request $request
      * @return void
@@ -56,7 +64,7 @@ class Dispatcher
     {
         try {
 
-            if ($this->authenticate() === false)
+            if ($this->auth !== null && !$this->auth->authenticate($request))
                 throw new \Exception('Not Authorized', 401);
 
             if (!$this->router->requestMethodSupported($request->getRequestMethod()))

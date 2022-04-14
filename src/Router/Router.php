@@ -10,11 +10,6 @@ class Router
     protected array $handlers = [];
 
     /**
-     * @var Dispatcher
-     */
-    protected Dispatcher $dispatcher;
-
-    /**
      * @var string[]
      */
     protected array $supportedHttpMethods = [
@@ -23,8 +18,6 @@ class Router
         'POST',
         'PUT'
     ];
-
-    protected Request $request;
 
     /**
      * @param string $method
@@ -54,7 +47,7 @@ class Router
      * @param $handler
      * @return $this
      */
-    public function delete(string $route, $handler): Router
+    public function delete(string $route, $handler): self
     {
         return $this->registerHandler('DELETE', $route, $handler);
     }
@@ -64,7 +57,7 @@ class Router
      * @param $handler
      * @return $this
      */
-    public function get(string $route, $handler): Router
+    public function get(string $route, $handler): self
     {
         return $this->registerHandler('GET', $route, $handler);
     }
@@ -74,7 +67,7 @@ class Router
      * @param $handler
      * @return $this
      */
-    public function post(string $route, $handler): Router
+    public function post(string $route, $handler): self
     {
         return $this->registerHandler('POST', $route, $handler);
     }
@@ -84,7 +77,7 @@ class Router
      * @param $handler
      * @return $this
      */
-    public function put(string $route, $handler): Router
+    public function put(string $route, $handler): self
     {
         return $this->registerHandler('PUT', $route, $handler);
     }
@@ -104,7 +97,7 @@ class Router
      * @param $handler
      * @return $this
      */
-    protected function registerHandler(string $requestMethod, string $route, $handler): Router
+    protected function registerHandler(string $requestMethod, string $route, $handler): self
     {
         $this->handlers[$requestMethod][$route] = $handler;
 
