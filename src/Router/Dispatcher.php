@@ -108,7 +108,7 @@ class Dispatcher
 
             $this->sendHeaders();
 
-            echo $response;
+            echo $response ?? '';
         }
     }
 
