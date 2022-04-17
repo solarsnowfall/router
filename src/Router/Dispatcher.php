@@ -93,7 +93,7 @@ class Dispatcher
 
             } catch (\Exception $exception) {
 
-                error_log($exception->getMessage());
+                error_log($exception->getMessage() . ': ' . $exception->getTraceAsString());
 
                 throw new \Exception('Internal Server Error', 500, $exception);
             }
