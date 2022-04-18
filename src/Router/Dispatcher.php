@@ -6,6 +6,7 @@ use Solar\Auth\AuthInterface;
 use Solar\Http\StatusCode;
 use Solar\Http\StatusException;
 use Solar\Router\Response\GenericResponse;
+use Solar\Router\Response\JsonResponse;
 use Solar\Router\Response\ResponseInterface;
 
 class Dispatcher
