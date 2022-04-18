@@ -2,6 +2,8 @@
 
 namespace Solar\Router;
 
+use Solar\Control\ControlInterface;
+
 class HandlerContainer
 {
     /**
@@ -38,6 +40,13 @@ class HandlerContainer
 
             if ($reflection->isStatic())
                 return forward_static_call($handler, $request);
+
+            if (is_subclass_of($handler[0], ControlInterface::class))
+            {
+                $controller = new $handler[0]($request, $handler[1]);
+
+                return $controller();
+            }
 
             $handler[0] = new $handler[0]($request);
 
