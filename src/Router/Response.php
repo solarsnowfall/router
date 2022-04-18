@@ -27,9 +27,7 @@ class Response
     public function __construct(Dispatcher $dispatcher, int $code, $body)
     {
         $this->dispatcher = $dispatcher;
-
         $this->code = $code;
-
         $this->body = $body;
     }
 
@@ -38,7 +36,7 @@ class Response
      */
     public function __toString()
     {
-        if ($this->dispatcher->getContentType() === 'application/json' && is_array($this->body))
+        if ($this->dispatcher->getContentType() === 'application/json' && is_array($this->body) || is_object($this->body))
             return json_encode($this->body);
 
         return (string) $this->body;

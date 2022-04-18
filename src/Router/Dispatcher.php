@@ -3,6 +3,8 @@
 namespace Solar\Router;
 
 use Solar\Auth\AuthInterface;
+use Solar\Http\StatusCode;
+use Solar\Http\StatusException;
 
 class Dispatcher
 {
@@ -65,17 +67,17 @@ class Dispatcher
         try {
 
             if ($this->auth !== null && !$this->auth->authenticate($request))
-                throw new \Exception('Not Authorized', 401);
+                throw new StatusException(StatusCode::UNAUTHORIZED);
 
             if (!$this->router->requestMethodSupported($request->getRequestMethod()))
-                throw new \Exception('Method Not Allowed', 405);
+                throw new StatusException(StatusCode::METHOD_NOT_ALLOWED);
 
             $matches = $this->router->match($request->getRequestMethod(), $request->getRoute());
 
             $handler = $matches['exact'] ?: $matches['wildcard'];
 
             if (!$handler)
-                throw new \Exception('Not Found', 404);
+                throw new StatusException(StatusCode::NOT_FOUND);
 
             $container = new HandlerContainer($handler);
 
@@ -89,13 +91,18 @@ class Dispatcher
 
                 restore_error_handler();
 
-                $this->statusCode = 200;
+                $this->statusCode = StatusCode::OK;
 
             } catch (\Exception $exception) {
 
-                error_log($exception->getMessage() . ': ' . $exception->getTraceAsString());
+                if (!$exception instanceof StatusException)
+                {
+                    error_log($exception->getMessage() . ': ' . $exception->getTraceAsString());
 
-                throw new \Exception('Internal Server Error', 500, $exception);
+                    $exception = new StatusException(StatusCode::INTERNAL_SERVER_ERROR, $exception);
+                }
+
+                throw $exception;
             }
 
         } catch (\Exception $exception) {
@@ -119,10 +126,11 @@ class Dispatcher
      */
     protected function errorResponse(string $message, int $code): string
     {
-        if ($this->getContentType() === 'application/json')
-            return json_encode(['message' => $message, 'code' => $code]);
+        $body = $this->getContentType() === 'application/json'
+            ? json_encode(['message' => $message, 'code'])
+            : "<html lang='en'><head><title>$code $message</title></head><body><h1>$message</h1></body></html>";
 
-        return "<html lang='en'><head><title>$code $message</title></head><body><h1>$message</h1></body></html>";
+        return new Response($this, $code, $body);
     }
 
     /**
