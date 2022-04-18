@@ -5,6 +5,8 @@ namespace Solar\Router;
 use Solar\Auth\AuthInterface;
 use Solar\Http\StatusCode;
 use Solar\Http\StatusException;
+use Solar\Router\Response\GenericResponse;
+use Solar\Router\Response\ResponseInterface;
 
 class Dispatcher
 {
@@ -35,7 +37,6 @@ class Dispatcher
     public function __construct(Router $router, AuthInterface $auth = null)
     {
         $this->router = $router;
-
         $this->auth = $auth;
     }
 
@@ -87,9 +88,12 @@ class Dispatcher
 
                 $response = $container($request);
 
+                if (!$response instanceof ResponseInterface)
+                    $response = $this->newResponse(StatusCode::OK, $response);
+
                 restore_error_handler();
 
-                $this->statusCode = StatusCode::OK;
+                $this->statusCode = $response->getStatus();
 
             } catch (\Exception $exception) {
 
@@ -105,30 +109,30 @@ class Dispatcher
 
         } catch (\Exception $exception) {
 
-            $response = $this->errorResponse($exception->getMessage(), $exception->getCode());
+            if (!isset($response) || !$response instanceof ResponseInterface)
+                $response = $this->newResponse($exception->getCode(), $exception->getMessage());
 
-            $this->statusCode = $exception->getCode();
+            $this->statusCode = $response->getStatus();
 
         } finally {
 
             $this->sendHeaders();
 
-            echo $response ?? '';
+            echo $response;
         }
     }
 
     /**
-     * @param string $message
      * @param int $code
+     * @param string $message
      * @return string
      */
-    protected function errorResponse(string $message, int $code): string
+    protected function newResponse(int $code, string $message): string
     {
-        $body = $this->getContentType() === 'application/json'
-            ? json_encode(['status' => $code, 'message' => $message])
-            : "<html lang='en'><head><title>$code $message</title></head><body><h1>$message</h1></body></html>";
+        if ($this->getContentType() === 'application/json')
+            return new JsonResponse($code, $message);
 
-        return new Response($this, $code, $body);
+        return new GenericResponse($code, $message);
     }
 
     /**
