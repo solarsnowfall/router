@@ -15,4 +15,21 @@ interface ResponseInterface
      * @return string
      */
     public function __toString(): string;
+
+    /**
+     * @return array
+     */
+    public function getData(): array;
+
+    /**
+     * @return string
+     */
+    public function getMessage(): string;
+
+    /**
+     * @return int
+     */
+    public function getStatus(): int;
+
+
 }

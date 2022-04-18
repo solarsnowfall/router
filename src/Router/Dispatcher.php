@@ -3,6 +3,7 @@
 namespace Solar\Router;
 
 use Solar\Auth\AuthInterface;
+use Solar\Curl\Response;
 use Solar\Http\StatusCode;
 use Solar\Http\StatusException;
 use Solar\Router\Response\GenericResponse;
@@ -126,9 +127,9 @@ class Dispatcher
     /**
      * @param int $code
      * @param string $message
-     * @return string
+     * @return ResponseInterface
      */
-    protected function newResponse(int $code, string $message): string
+    protected function newResponse(int $code, string $message): ResponseInterface
     {
         if ($this->getContentType() === 'application/json')
             return new JsonResponse($code, $message);
