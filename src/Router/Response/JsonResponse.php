@@ -4,6 +4,9 @@ namespace Solar\Router\Response;
 
 class JsonResponse extends AbstractResponse
 {
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
         $data = [
