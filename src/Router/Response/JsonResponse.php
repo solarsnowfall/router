@@ -1,8 +1,6 @@
 <?php
 
-namespace Solar\Router;
-
-use Solar\Router\Response\AbstractResponse;
+namespace Solar\Router\Response;
 
 class JsonResponse extends AbstractResponse
 {
