@@ -125,7 +125,7 @@ class Dispatcher
     protected function errorResponse(string $message, int $code): string
     {
         $body = $this->getContentType() === 'application/json'
-            ? json_encode(['code' => $code, 'message' => $message])
+            ? json_encode(['status' => $code, 'message' => $message])
             : "<html lang='en'><head><title>$code $message</title></head><body><h1>$message</h1></body></html>";
 
         return new Response($this, $code, $body);
