@@ -3,7 +3,7 @@
 namespace Solar\Control;
 
 use Solar\Router\Request;
-use Solar\Router\Response;
+use Solar\Router\Response\ResponseInterface;
 
 interface ControlInterface
 {
@@ -14,7 +14,7 @@ interface ControlInterface
     public function __construct(Request $request, string $method);
 
     /**
-     * @return string
+     * @return ResponseInterface
      */
-    public function __invoke(): Response;
+    public function __invoke(): ResponseInterface;
 }
