@@ -121,6 +121,11 @@ class Request
         return $body;
     }
 
+    public function getContentType()
+    {
+        return $this->contentType;
+    }
+
     /**
      * @return string
      */

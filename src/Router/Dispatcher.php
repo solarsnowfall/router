@@ -91,7 +91,7 @@ class Dispatcher
                 $response = $container($request);
 
                 if (!$response instanceof ResponseInterface)
-                    $response = $this->newResponse(StatusCode::OK, $response);
+                    $response = $this->newResponse(StatusCode::OK, $response, $request->getContentType());
 
                 restore_error_handler();
 
@@ -112,7 +112,7 @@ class Dispatcher
         } catch (\Exception $exception) {
 
             if (!isset($response) || !$response instanceof ResponseInterface)
-                $response = $this->newResponse($exception->getCode(), $exception->getMessage());
+                $response = $this->newResponse($exception->getCode(), $exception->getMessage(), $request->getContentType());
 
             $this->statusCode = $response->getStatus();
 
@@ -127,11 +127,12 @@ class Dispatcher
     /**
      * @param int $code
      * @param string $message
+     * @param string $contentType
      * @return ResponseInterface
      */
-    protected function newResponse(int $code, string $message): ResponseInterface
+    protected function newResponse(int $code, string $message, string $contentType = ''): ResponseInterface
     {
-        if ($this->getContentType() === 'application/json')
+        if ($contentType === 'application/json')
             return new JsonResponse($code, $message);
 
         return new GenericResponse($code, $message);
